@@ -24,22 +24,19 @@ module Main =
             | head :: tail :: rest -> (head,tail) :: makeTuples(tail:: rest) 
             | _ -> [] 
 
+    let countIncreasing (inputPath: string): int =
+       let input = readLines inputPath |> Seq.toList
+       let triples = makeTriples input 
+       let tuples = makeTuples triples 
+       tuples |> List.where ( fun ((a,b,c), (d,e,f)) ->  (a+b+c) < (d+e+f)) |> List.length
+
     [<Fact>]
     let checkTestdata()= 
-       let testdata = readLines "input.txt" |> Seq.toList
-       let triples = makeTriples testdata
-       let tuples = makeTuples triples 
-       let count = tuples |> List.where ( fun ((a,b,c), (d,e,f)) ->  (a+b+c) < (d+e+f)) |> List.length
-       Assert.Equal(5, count)
-
-       let sums = [607;618; 618; 617; 647; 716; 769; 792];
-       Assert.Equal<int list>(sums, (triples |> List.map (fun (a,b,c) -> a+b+c)))
+      let count = countIncreasing "input.txt"
+      Assert.Equal(5, count)
        
     [<Fact>]
     let checkAssignment()= 
-       let testdata = readLines "input1.txt" |> Seq.toList
-       let triples = makeTriples testdata
-       let tuples = makeTuples triples 
-       let count = tuples |> List.where ( fun ((a,b,c), (d,e,f)) ->  (a+b+c) < (d+e+f)) |> List.length
+       let count = countIncreasing "input1.txt"
        Assert.Equal(1618, count)
 

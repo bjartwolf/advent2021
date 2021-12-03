@@ -67,7 +67,7 @@ module Common =
     let getMostCommonBit (report: BitArray list) (position: int) =
         let bits = report |> List.map (fun f -> f.Get(position)) 
         let nrOfTrue = bits |> List.where id |> List.length 
-        let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
+        let nrOfFalse = report.Length - nrOfTrue 
         nrOfTrue >= nrOfFalse
 
     let bitArrayToInt (input: BitArray) : int =

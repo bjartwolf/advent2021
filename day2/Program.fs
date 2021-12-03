@@ -9,14 +9,13 @@ module Input =
     let readLines (filePath:string) : Command seq = seq {
         use sr = new StreamReader (filePath)
         while not sr.EndOfStream do
-            let line = sr.ReadLine () 
-            if (line.Contains("forward")) then 
-                yield Forward (Int32.Parse(line.Replace("forward ", "")))
-            if (line.Contains("down")) then 
-                yield Down (Int32.Parse(line.Replace("down", "")))
-            if (line.Contains("up")) then 
-                yield Up (Int32.Parse(line.Replace("up", "")))
-    }
+            let chars = sr.ReadLine().ToCharArray() 
+            let value = (chars.[chars.Length - 1] |> int) - 48
+            match chars.[0] with
+                | 'f' -> yield Forward value 
+                | 'd' -> yield Down value 
+                | 'u' -> yield Up value 
+   }
 
 module Main =
     open Input

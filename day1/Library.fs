@@ -11,8 +11,6 @@ module Input =
 module Main =
     open Input
     open Xunit
-    let lines = readLines "input.txt" |> Seq.toList
-
     let rec makeTriples(list: int list) =
         list |> List.windowed 3
              |> List.map (fun (x) -> (x.Head, x.Tail.Head, x.Tail.Tail.Head))
@@ -37,4 +35,3 @@ module Main =
     let checkAssignment()= 
        let count = countIncreasing "input1.txt"
        Assert.Equal(1618, count)
-

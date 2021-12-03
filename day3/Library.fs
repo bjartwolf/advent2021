@@ -26,9 +26,6 @@ module Input =
 
     [<Fact>]
     let checkBitesInParser ()= 
-      // 00100
-      // 11110
-      // 0 is the LSB, can get bits up to nr 32 (index 31)
       let diagnostics = readLines "input.txt"
       let firstLine = diagnostics |> Seq.head
       Assert.False(firstLine.Get(0))
@@ -36,7 +33,6 @@ module Input =
       Assert.True(firstLine.Get(2))
       Assert.False(firstLine.Get(3))
       Assert.False(firstLine.Get(4))
-//      Assert.False(firstLine.Get(31))
  
       let secondLine = diagnostics |> Seq.skip 1 |> Seq.head
       Assert.True(secondLine.Get(0))
@@ -44,12 +40,9 @@ module Input =
       Assert.True(secondLine.Get(2))
       Assert.True(secondLine.Get(3))
       Assert.False(secondLine.Get(4))
- //     Assert.False(secondLine.Get(7))
 
     [<Fact>]
     let checkBitesInParserWithOtherdataset ()= 
-      //111100000101
-      // 0 is the LSB, can get bits up to nr 32 (index 31)
       let diagnostics = readLines "input1.txt"
       let firstLine = diagnostics |> Seq.head
       Assert.True(firstLine.Get(0))

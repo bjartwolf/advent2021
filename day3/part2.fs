@@ -114,12 +114,11 @@ module Main =
       Assert.Equal(10, getScrubber report)
       Assert.Equal(230, getProduct report)
 
-      (*
     [<Fact>]
     let calcValueFull()= 
       let report = readLines "input1.txt" |> Seq.toList
-      Assert.Equal(3277364, getProductFrom report)
-*)
+      Assert.Equal(5736383, getProduct report)
+
 
     [<Fact>]
     let checkMostCommonBit()= 

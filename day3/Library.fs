@@ -65,59 +65,21 @@ module Input =
       Assert.False(firstLine.Get(10))
       Assert.True(firstLine.Get(11))
 
-module Main =
-    open Input
-    open Xunit
+module Common = 
     open System
     open System.Collections
-
-    // assumes they are not equal for now, not sure it is specified what to do then....
-    // can be simplified a bit
+    // In part two, it says 1 has priority over 0 when equal, so keeping it as it is 
     let getMostCommonBit (report: BitArray list) (position: int) =
         let bits = report |> List.map (fun f -> f.Get(position)) 
         let nrOfTrue = bits |> List.where id |> List.length 
         let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
-        nrOfTrue > nrOfFalse
+        nrOfTrue >= nrOfFalse
 
     let bitArrayToInt (input: BitArray) : int =
-        let resultBytes = Array.create<byte> 16 0uy
-        input.CopyTo(resultBytes, 0);
-        BitConverter.ToInt32(resultBytes,0)
-
-    let conversionCore (report: BitArray list) (converter: bool -> bool) =
-        let count = (report |> List.head).Length
+        let count = input.Length 
         let bitArray = new BitArray(count)
         for i in [0 .. (count - 1)] do
-           bitArray.[count - (i+1)] <- converter (getMostCommonBit report i)
-        bitArrayToInt bitArray
- 
-    let getEpsilonFromReport (report: BitArray list) =
-        conversionCore report not
-   
-    let getGammaFromReport (report: BitArray list) =
-        conversionCore report id 
-
-    let getProductFrom (report: BitArray list) =
-        getGammaFromReport report * getEpsilonFromReport report
-
-    [<Fact>]
-    let calcValueExample()= 
-      let report = readLines "input.txt" |> Seq.toList
-      Assert.Equal(22, getGammaFromReport report)
-      Assert.Equal(9, getEpsilonFromReport report)
-      Assert.Equal(198, getProductFrom report)
-
-    [<Fact>]
-    let calcValueFull()= 
-      let report = readLines "input1.txt" |> Seq.toList
-      Assert.Equal(3277364, getProductFrom report)
-
-
-    [<Fact>]
-    let checkMostCommonBit()= 
-      let report = readLines "input.txt" |> Seq.toList
-      Assert.Equal(true, getMostCommonBit report 0)
-      Assert.Equal(false, getMostCommonBit report 1)
-      Assert.Equal(true, getMostCommonBit report 2)
-      Assert.Equal(true, getMostCommonBit report 3)
-      Assert.Equal(false, getMostCommonBit report 4)
+           bitArray.[count - (i+1)] <- input.Get(i) 
+        let resultBytes = Array.create<byte> 16 0uy
+        bitArray.CopyTo(resultBytes, 0);
+        BitConverter.ToInt32(resultBytes,0)

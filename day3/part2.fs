@@ -9,10 +9,9 @@ module Main =
     let rec getCore (report: BitArray list) (comparer: bool -> bool) (position: int) =
         let mostCommonBit = getMostCommonBit report position
         let remaining = report |> List.where (fun f -> f.Get(position) = comparer mostCommonBit)
-        if (remaining.Length = 1) then 
-            remaining.Head |> bitArrayToInt
-        else 
-            getCore remaining comparer (position+1)
+        match remaining with 
+            | [remaining] -> bitArrayToInt remaining
+            | _ -> getCore remaining comparer (position + 1)
 
     let getOxygen (report: BitArray list) = 
         getCore report id 0

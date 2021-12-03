@@ -78,6 +78,17 @@ module Main =
         let nrOfTrue = bits |> List.where id |> List.length 
         let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
         nrOfTrue > nrOfFalse
+
+    let getEpsilonFromReport (report: BitArray list) =
+        let count = (report |> List.head).Length
+        let bitArray = new BitArray(count)
+        for i in [0 .. (count - 1)] do
+            // reversing again... might stop all this reversing madness.
+           bitArray.[count - (i+1)] <- not (getMostCommonBit report i)
+//        let resultLength = (bitArray.Length - 1) / 8 + 1
+        let resultBytes = Array.create<byte> 16 0uy
+        bitArray.CopyTo(resultBytes, 0);
+        BitConverter.ToInt32(resultBytes,0)
     
     let getGammaFromReport (report: BitArray list) =
         let count = (report |> List.head).Length
@@ -86,16 +97,27 @@ module Main =
             // reversing again... might stop all this reversing madness.
            bitArray.[count - (i+1)] <- getMostCommonBit report i 
 //        let resultLength = (bitArray.Length - 1) / 8 + 1
-        let resultBytes = Array.create<byte> 1 0uy
+        let resultBytes = Array.create<byte> 16 0uy
         bitArray.CopyTo(resultBytes, 0);
-        Convert.ToInt32(resultBytes.[0]) 
+        BitConverter.ToInt32(resultBytes,0)
 
+//        Convert.ToInt32(resultBytes.[0]) 
+
+    let getProductFrom (report: BitArray list) =
+        getGammaFromReport report * getEpsilonFromReport report
 
     [<Fact>]
-    let calcValue()= 
+    let calcValueExample()= 
       let report = readLines "input.txt" |> Seq.toList
-      let nr = getGammaFromReport report
-      Assert.Equal(22, nr)
+      Assert.Equal(22, getGammaFromReport report)
+      Assert.Equal(9, getEpsilonFromReport report)
+      Assert.Equal(198, getProductFrom report)
+
+    [<Fact>]
+    let calcValueFull()= 
+      let report = readLines "input1.txt" |> Seq.toList
+      Assert.Equal(3277364, getProductFrom report)
+
 
     [<Fact>]
     let checkMostCommonBit()= 

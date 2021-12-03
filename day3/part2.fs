@@ -90,25 +90,28 @@ module Main =
         bitArray.CopyTo(resultBytes, 0);
         BitConverter.ToInt32(resultBytes,0)
 
-    let rec getOxygen (report: BitArray list) (position: int) =
+    let rec getCore (report: BitArray list) (converter: bool -> bool) (position: int) =
         let mostCommonBit = getMostCommonBit report position
-        let remaining = report |> List.where (fun f -> f.Get(position) = mostCommonBit)
+        let remaining = report |> List.where (fun f -> f.Get(position) = converter mostCommonBit)
         if (remaining.Length = 1) then 
             remaining.Head |> bitArrayToInt
         else 
-            getOxygen remaining (position+1)
+            getCore remaining converter (position+1)
 
-    let getScrubber (report: BitArray list) (position: int) =
-        10 
+    let getOxygen (report: BitArray list) = 
+        getCore report id 0
+
+    let getScrubber (report: BitArray list) = 
+        getCore report not 0 
 
     let getProduct (report: BitArray list) =
-        getOxygen report 0 * getScrubber report 0 
+        getOxygen report * getScrubber report
 
     [<Fact>]
     let calcValueExample()= 
       let report = readLines "input.txt" |> Seq.toList
-      Assert.Equal(23, getOxygen report 0)
-      Assert.Equal(10, getScrubber report 0)
+      Assert.Equal(23, getOxygen report)
+      Assert.Equal(10, getScrubber report)
       Assert.Equal(230, getProduct report)
 
       (*

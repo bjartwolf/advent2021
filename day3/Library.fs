@@ -19,7 +19,6 @@ module Input =
             yield reversedArray 
     }
 
-
     [<Fact>]
     let readAllLines ()= 
       Assert.Equal(12, readLines "input.txt" |> Seq.length)
@@ -66,13 +65,24 @@ module Input =
       Assert.False(firstLine.Get(10))
       Assert.True(firstLine.Get(11))
 
-    
- 
 module Main =
     open Input
     open Xunit
+    open System
+    open System.Collections
+
+    // assumes they are not equal for now, not sure it is specified what to do then....
+    let getMostCommonBit (report: BitArray list) (position: int) =
+        let bits = report |> List.map (fun f -> f.Get(position)) 
+        let nrOfTrue = bits |> List.where id |> List.length 
+        let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
+        nrOfTrue > nrOfFalse
 
     [<Fact>]
-    let countFirstBit()= 
-      Assert.Equal(12, readLines "input.txt" |> Seq.length)
- 
+    let checkMostCommonBit()= 
+      let report = readLines "input.txt" |> Seq.toList
+      Assert.Equal(true, getMostCommonBit report 0)
+      Assert.Equal(false, getMostCommonBit report 1)
+      Assert.Equal(true, getMostCommonBit report 2)
+      Assert.Equal(true, getMostCommonBit report 3)
+      Assert.Equal(false, getMostCommonBit report 4)

@@ -76,20 +76,27 @@ module Main =
         let bits = report |> List.map (fun f -> f.Get(position)) 
         let nrOfTrue = bits |> List.where id |> List.length 
         let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
-        nrOfTrue > nrOfFalse
+        nrOfTrue >= nrOfFalse
 
     let getLeastCommonBit (report: BitArray list) (position: int) =
         getMostCommonBit report position |> not
 
     let bitArrayToInt (input: BitArray) : int =
+        let count = input.Length 
+        let bitArray = new BitArray(count)
+        for i in [0 .. (count - 1)] do
+           bitArray.[count - (i+1)] <- input.Get(i) 
         let resultBytes = Array.create<byte> 16 0uy
-        input.CopyTo(resultBytes, 0);
+        bitArray.CopyTo(resultBytes, 0);
         BitConverter.ToInt32(resultBytes,0)
 
     let rec getOxygen (report: BitArray list) (position: int) =
-        23
-//        let mostCommonBit = getMostCommonBit report position
-        
+        let mostCommonBit = getMostCommonBit report position
+        let remaining = report |> List.where (fun f -> f.Get(position) = mostCommonBit)
+        if (remaining.Length = 1) then 
+            remaining.Head |> bitArrayToInt
+        else 
+            getOxygen remaining (position+1)
 
     let getScrubber (report: BitArray list) (position: int) =
         10 

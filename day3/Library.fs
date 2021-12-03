@@ -72,10 +72,9 @@ module Common =
         nrOfTrue >= nrOfFalse
 
     let bitArrayToInt (input: BitArray) : int =
-        let count = input.Length 
-        let bitArray = new BitArray(count)
-        for i in [0 .. (count - 1)] do
-           bitArray.[count - (i+1)] <- input.Get(i) 
+        let bitArray = new BitArray(input.Length)
+        for i in [0 .. (bitArray.Length - 1)] do
+           bitArray.[bitArray.Length - i - 1] <- input.Get(i) 
         let resultBytes = Array.create<byte> 4 0uy
         bitArray.CopyTo(resultBytes, 0);
         BitConverter.ToInt32(resultBytes,0)

@@ -6,13 +6,13 @@ module Main =
     open Xunit
     open System.Collections
 
-    let rec getCore (report: BitArray list) (converter: bool -> bool) (position: int) =
+    let rec getCore (report: BitArray list) (comparer: bool -> bool) (position: int) =
         let mostCommonBit = getMostCommonBit report position
-        let remaining = report |> List.where (fun f -> f.Get(position) = converter mostCommonBit)
+        let remaining = report |> List.where (fun f -> f.Get(position) = comparer mostCommonBit)
         if (remaining.Length = 1) then 
             remaining.Head |> bitArrayToInt
         else 
-            getCore remaining converter (position+1)
+            getCore remaining comparer (position+1)
 
     let getOxygen (report: BitArray list) = 
         getCore report id 0

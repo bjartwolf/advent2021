@@ -11,20 +11,14 @@ module Input =
 module Main =
     open Input
     open Xunit
-    let rec makeTriples(list: int list) =
-        list |> List.windowed 3
-             |> List.map (fun (x) -> (x.Head, x.Tail.Head, x.Tail.Tail.Head))
-
-    let rec makeTuples(list: (int*int*int) list) =
-        list |> List.windowed 2
-             |> List.map (fun (x) -> (x.Head, x.Tail.Head))
 
     let countIncreasing (inputPath: string): int =
-       let input = readLines inputPath |> Seq.toList
-       let triples = makeTriples input 
-       let tuples = makeTuples triples 
-       tuples |> List.where ( fun ((a,b,c), (d,e,f)) ->  (a+b+c) < (d+e+f))
-              |> List.length
+       readLines inputPath 
+             |> Seq.toList 
+             |> List.windowed 3 
+             |> List.windowed 2
+             |> List.where (fun f -> f.Head |> List.sum < (f.Tail.Head |> List.sum)) 
+             |> List.length
 
     [<Fact>]
     let checkTestdata()= 

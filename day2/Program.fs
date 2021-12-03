@@ -3,10 +3,8 @@
 type Command = Up of int | Down of int | Forward of int
 
 module Input =
-    open System
     open System.IO
-
-    let readLines (filePath:string) : Command seq = seq {
+    let readLinesSeq (filePath:string) : Command seq = seq {
         use sr = new StreamReader (filePath)
         while not sr.EndOfStream do
             let chars = sr.ReadLine().ToCharArray() 
@@ -15,7 +13,9 @@ module Input =
                 | 'f' -> yield Forward value 
                 | 'd' -> yield Down value 
                 | 'u' -> yield Up value 
-   }
+    }
+
+    let readLines (filePath:string) = readLinesSeq filePath |> Seq.toList
 
 module Main =
     open Input
@@ -32,19 +32,19 @@ module Main =
 
     [<Fact>]
     let moveGoesTo15and10()= 
-      let commands = readLines "input.txt" |> Seq.toList
+      let commands = readLines "input.txt"
       let pos = move (0,0) 0 commands
       Assert.Equal((15,60), pos)
       Assert.Equal(900, multPos pos)
  
     [<Fact>]
     let checkTestdata()= 
-      let count = readLines "input.txt" |> Seq.length
-      Assert.Equal(6, count)
+      let input = readLines "input.txt"
+      Assert.Equal(6, input.Length)
        
     [<Fact>]
     let checkAssignment()= 
-      let commands = readLines "input1.txt" |> Seq.toList
+      let commands = readLines "input1.txt"
       Assert.Equal(1000, List.length commands)
       let pos = move (0,0) 0 commands
       Assert.Equal((1965,1071386), pos)

@@ -79,29 +79,22 @@ module Main =
         let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
         nrOfTrue > nrOfFalse
 
+    let conversionCore (report: BitArray list) (converter: bool -> bool) =
+        let count = (report |> List.head).Length
+        let bitArray = new BitArray(count)
+        for i in [0 .. (count - 1)] do
+            // reversing again... might stop all this reversing madness.
+           bitArray.[count - (i+1)] <- converter (getMostCommonBit report i)
+//        let resultLength = (bitArray.Length - 1) / 8 + 1
+        let resultBytes = Array.create<byte> 16 0uy
+        bitArray.CopyTo(resultBytes, 0);
+        BitConverter.ToInt32(resultBytes,0)
+ 
     let getEpsilonFromReport (report: BitArray list) =
-        let count = (report |> List.head).Length
-        let bitArray = new BitArray(count)
-        for i in [0 .. (count - 1)] do
-            // reversing again... might stop all this reversing madness.
-           bitArray.[count - (i+1)] <- not (getMostCommonBit report i)
-//        let resultLength = (bitArray.Length - 1) / 8 + 1
-        let resultBytes = Array.create<byte> 16 0uy
-        bitArray.CopyTo(resultBytes, 0);
-        BitConverter.ToInt32(resultBytes,0)
-    
+        conversionCore report not
+   
     let getGammaFromReport (report: BitArray list) =
-        let count = (report |> List.head).Length
-        let bitArray = new BitArray(count)
-        for i in [0 .. (count - 1)] do
-            // reversing again... might stop all this reversing madness.
-           bitArray.[count - (i+1)] <- getMostCommonBit report i 
-//        let resultLength = (bitArray.Length - 1) / 8 + 1
-        let resultBytes = Array.create<byte> 16 0uy
-        bitArray.CopyTo(resultBytes, 0);
-        BitConverter.ToInt32(resultBytes,0)
-
-//        Convert.ToInt32(resultBytes.[0]) 
+        conversionCore report id 
 
     let getProductFrom (report: BitArray list) =
         getGammaFromReport report * getEpsilonFromReport report

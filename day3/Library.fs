@@ -72,11 +72,30 @@ module Main =
     open System.Collections
 
     // assumes they are not equal for now, not sure it is specified what to do then....
+    // can be simplified a bit
     let getMostCommonBit (report: BitArray list) (position: int) =
         let bits = report |> List.map (fun f -> f.Get(position)) 
         let nrOfTrue = bits |> List.where id |> List.length 
         let nrOfFalse = bits |> List.map not |> List.where id |> List.length 
         nrOfTrue > nrOfFalse
+    
+    let getGammaFromReport (report: BitArray list) =
+        let count = (report |> List.head).Length
+        let bitArray = new BitArray(count)
+        for i in [0 .. (count - 1)] do
+            // reversing again... might stop all this reversing madness.
+           bitArray.[count - (i+1)] <- getMostCommonBit report i 
+//        let resultLength = (bitArray.Length - 1) / 8 + 1
+        let resultBytes = Array.create<byte> 1 0uy
+        bitArray.CopyTo(resultBytes, 0);
+        Convert.ToInt32(resultBytes.[0]) 
+
+
+    [<Fact>]
+    let calcValue()= 
+      let report = readLines "input.txt" |> Seq.toList
+      let nr = getGammaFromReport report
+      Assert.Equal(22, nr)
 
     [<Fact>]
     let checkMostCommonBit()= 

@@ -6,9 +6,6 @@ module Main =
     open Xunit
     open System.Collections
 
-    let getLeastCommonBit (report: BitArray list) (position: int) =
-        getMostCommonBit report position |> not
-
     let rec getCore (report: BitArray list) (converter: bool -> bool) (position: int) =
         let mostCommonBit = getMostCommonBit report position
         let remaining = report |> List.where (fun f -> f.Get(position) = converter mostCommonBit)

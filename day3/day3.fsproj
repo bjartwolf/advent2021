@@ -13,10 +13,9 @@
     <Content Include="input1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Compile Include="part2.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
-
-  <ItemGroup />
 
   <ItemGroup>
     <PackageReference Include="xunit" Version="2.4.1" />

@@ -65,8 +65,9 @@ module Common =
     open Xunit
 
     let getMostCommonBit (report: BitArray list) (position: int) =
-        let bits = report |> List.map (fun f -> f.Get(position)) 
-        let nrOfTrue = bits |> List.where id |> List.length 
+        let nrOfTrue = report |> List.map (fun f -> f.Get(position))
+                              |> List.where id 
+                              |> List.length 
         let nrOfFalse = report.Length - nrOfTrue 
         nrOfTrue >= nrOfFalse
 

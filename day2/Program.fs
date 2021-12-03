@@ -34,18 +34,14 @@ module Main =
     let moveGoesTo15and10()= 
       let commands = readLines "input.txt"
       let pos = move (0,0) 0 commands
+      Assert.Equal(6, commands.Length)
       Assert.Equal((15,60), pos)
       Assert.Equal(900, multPos pos)
  
     [<Fact>]
-    let checkTestdata()= 
-      let input = readLines "input.txt"
-      Assert.Equal(6, input.Length)
-       
-    [<Fact>]
     let checkAssignment()= 
       let commands = readLines "input1.txt"
-      Assert.Equal(1000, List.length commands)
+      Assert.Equal(1000, commands.Length)
       let pos = move (0,0) 0 commands
       Assert.Equal((1965,1071386), pos)
       Assert.Equal(2105273490, multPos pos)

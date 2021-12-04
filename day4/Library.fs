@@ -18,15 +18,25 @@ module Input =
     type Boards = Board list 
 
     let parseInput (filePath: string): (Boards * NumbersToDraw) = 
-        let lines = readLines filePath
-        let numbersLine = lines |> Seq.head 
-        let numbers = numbersLine.Split(",") |> Array.map (fun x -> Int32.Parse(x)) |> Array.toList
-        ( [[| [|Marked|] |]], numbers)
+        let getNumbersFromCsvLine (line: string) = line.Split(",") |> Array.map (fun x -> Int32.Parse(x)) |> Array.toList
+        let lines = readLines filePath |> Seq.toList
+        let numbersLine = lines |> List.head 
+        let numbers = getNumbersFromCsvLine numbersLine 
+
+        let boardsInput = lines.Tail.Tail |> List.filter (fun s -> String.IsNullOrEmpty(s) |> not)
+        let nrOfBoards = boardsInput.Length / 5
+        let boardGroups = boardsInput |> List.splitInto(nrOfBoards)
+        let boards = boardGroups |> List.map (fun b -> 
+            b |> List.toArray |> Array.map ( fun r ->
+                r.Split(" ") |> Array.filter( fun s -> String.IsNullOrEmpty(s) |> not) |> Array.map (fun i -> Nr (Int32.Parse(i)))))
+
+        ( boards, numbers)
 
     [<Fact>]
-    let ParseingInputYields15Numbers()= 
-        let (board, numbers) = parseInput "input.txt" 
+    let ParseingInputYields27NumbersAndThreeBoards()= 
+        let (boards, numbers) = parseInput "input.txt" 
         Assert.Equal(27, numbers.Length)        
+        Assert.Equal(3, boards.Length)        
 
 //    let parseLines (filePath: string): 
     let isWinnerRow (row: Row) : bool =

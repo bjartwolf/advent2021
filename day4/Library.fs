@@ -83,10 +83,24 @@ module Input =
         else
            sumOfBoard winners.Head * number
 
+    let rec findLooserProduct (boards: Boards) (numbers: NumbersToDraw) =
+        let number = numbers.Head
+        let markedBoards = boards |> List.map (fun b -> markBoard b number)
+        let loosers = markedBoards |> List.filter (isWinnerBoard >> not)
+        if (loosers.IsEmpty) then
+            sumOfBoard markedBoards.Head * number
+        else
+            findLooserProduct loosers numbers.Tail
     [<Fact>]
     let TestData () =
         let (b, num) = parseInput "input.txt"
         Assert.Equal(4512, findWinnerProduct b num)
+
+    [<Fact>]
+    let TestDataPart2 () =
+        let (b, num) = parseInput "input.txt"
+        Assert.Equal(1924, findLooserProduct b num)
+
 
     [<Fact>]
     let Day1() =

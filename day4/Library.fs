@@ -10,11 +10,23 @@ module Input =
         while not sr.EndOfStream do
             yield sr.ReadLine()
         }
-
+    
     type NumbersToDraw = int list
     type Field = Marked | Nr of int
     type Row = Field []
     type Board = Row [] 
+    type Boards = Board list 
+
+    let parseInput (filePath: string): (Boards * NumbersToDraw) = 
+        let lines = readLines filePath
+        let numbersLine = lines |> Seq.head 
+        let numbers = numbersLine.Split(",") |> Array.map (fun x -> Int32.Parse(x)) |> Array.toList
+        ( [[| [|Marked|] |]], numbers)
+
+    [<Fact>]
+    let ParseingInputYields15Numbers()= 
+        let (board, numbers) = parseInput "input.txt" 
+        Assert.Equal(27, numbers.Length)        
 
 //    let parseLines (filePath: string): 
     let isWinnerRow (row: Row) : bool =
@@ -78,7 +90,6 @@ module Input =
     let RowdWithUndrawnNrIsNotWinner ()= 
         let r1 = [| Marked; Nr 4 ; Marked ; Marked; Marked|]
         Assert.Equal(false, isWinnerRow r1)        
-
 
     [<Fact>]
     let readAllLines ()= 

@@ -44,6 +44,18 @@ module Input =
                                 | Marked -> true
                                 | Nr _ -> false)
 
+    let sumOfBoard (board: Board): int =
+        let fields = board |> Array.collect (fun r -> r |> Array.map (fun f -> match f with 
+                                                                | Nr x -> x
+                                                                | Marked -> 0)) 
+        Array.sum(fields)
+
+    [<Fact>]
+    let SumOfABoard () =
+        let (b, nums) = parseInput "input.txt"
+        let firstBoard = b.Head
+        Assert.Equal(300, sumOfBoard firstBoard)
+
     let isWinnerColumn (board: Board) : bool =
         let lengthOfBoard = board.[0].Length
         let columnIndexes = [0 .. lengthOfBoard - 1] 

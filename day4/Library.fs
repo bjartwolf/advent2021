@@ -26,12 +26,18 @@ module Input =
         let lengthOfBoard = board.[0].Length
         let columnIndexes = [0 .. lengthOfBoard - 1] 
         columnIndexes |> List.exists (fun i ->
-            // check column 1 first etc
             let makeRow = board |> Array.map( fun x -> x.[i])
             isWinnerRow makeRow)
 
     let isWinnerBoard (board: Board) : bool =
         board |> Array.exists ( fun r -> isWinnerRow r) || isWinnerColumn board 
+
+    let markBoard (board: Board) (nrToMark: int) : Board =
+        board |> Array.map (fun r -> r|> Array.map (fun (f: Field) ->
+            match f with 
+                | Marked -> Marked
+                | Nr x -> if x = nrToMark then Marked else Nr x
+            )) 
 
     [<Fact>]
     let RowdWithMarkedRowIsWinner ()= 
@@ -60,6 +66,14 @@ module Input =
         let b = [|r1;r2|]
         Assert.Equal(false, isWinnerBoard b)        
 
+    [<Fact>]
+    let MarkingBoardMakesItWinner()= 
+        let r1 = [|  Nr 4 ; Marked ; Marked; Nr 4|]
+        let r2 = [|  Marked ; Nr 3; Nr 3; Marked|]
+        let b = [|r1;r2|]
+        let markedBoard = markBoard b 3
+        Assert.Equal(true, isWinnerBoard markedBoard)        
+ 
     [<Fact>]
     let RowdWithUndrawnNrIsNotWinner ()= 
         let r1 = [| Marked; Nr 4 ; Marked ; Marked; Marked|]

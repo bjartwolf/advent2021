@@ -66,12 +66,32 @@ module Input =
     let isWinnerBoard (board: Board) : bool =
         board |> Array.exists ( fun r -> isWinnerRow r) || isWinnerColumn board 
 
+
     let markBoard (board: Board) (nrToMark: int) : Board =
         board |> Array.map (fun r -> r|> Array.map (fun (f: Field) ->
             match f with 
                 | Marked -> Marked
                 | Nr x -> if x = nrToMark then Marked else Nr x
             )) 
+
+    let rec findWinnerProduct (boards: Boards) (numbers: NumbersToDraw) =
+        let number = numbers.Head
+        let markedBoards = boards |> List.map (fun b -> markBoard b number)
+        let winners = markedBoards |> List.filter isWinnerBoard
+        if (winners.IsEmpty) then
+            findWinnerProduct markedBoards numbers.Tail
+        else
+           sumOfBoard winners.Head * number
+
+    [<Fact>]
+    let TestData () =
+        let (b, num) = parseInput "input.txt"
+        Assert.Equal(4512, findWinnerProduct b num)
+
+    [<Fact>]
+    let Day1() =
+        let (b, num) = parseInput "input1.txt"
+        Assert.Equal(6592, findWinnerProduct b num)
 
     [<Fact>]
     let RowdWithMarkedRowIsWinner ()= 

@@ -1,7 +1,7 @@
 ﻿namespace day4
+
 module Input =
     open System.IO
-    open System.Collections
     open Xunit
     open System
 
@@ -28,17 +28,10 @@ module Input =
         let boardGroups = boardsInput |> List.splitInto(nrOfBoards)
         let boards = boardGroups |> List.map (fun b -> 
             b |> List.toArray |> Array.map ( fun r ->
-                r.Split(" ") |> Array.filter( fun s -> String.IsNullOrEmpty(s) |> not) |> Array.map (fun i -> Nr (Int32.Parse(i)))))
+                r.Split(" ") |> Array.filter( fun s -> not (String.IsNullOrEmpty(s))) |> Array.map (fun i -> Nr (Int32.Parse(i)))))
 
         ( boards, numbers)
 
-    [<Fact>]
-    let ParseingInputYields27NumbersAndThreeBoards()= 
-        let (boards, numbers) = parseInput "input.txt" 
-        Assert.Equal(27, numbers.Length)        
-        Assert.Equal(3, boards.Length)        
-
-//    let parseLines (filePath: string): 
     let isWinnerRow (row: Row) : bool =
         row |> Array.forall ( fun f -> match f with
                                 | Marked -> true
@@ -49,12 +42,6 @@ module Input =
                                                                 | Nr x -> x
                                                                 | Marked -> 0)) 
         Array.sum(fields)
-
-    [<Fact>]
-    let SumOfABoard () =
-        let (b, nums) = parseInput "input.txt"
-        let firstBoard = b.Head
-        Assert.Equal(300, sumOfBoard firstBoard)
 
     let isWinnerColumn (board: Board) : bool =
         let lengthOfBoard = board.[0].Length
@@ -91,8 +78,9 @@ module Input =
             sumOfBoard markedBoards.Head * number
         else
             findLooserProduct loosers numbers.Tail
+
     [<Fact>]
-    let TestData () =
+    let TestDataPart1 () =
         let (b, num) = parseInput "input.txt"
         Assert.Equal(4512, findWinnerProduct b num)
 
@@ -101,53 +89,12 @@ module Input =
         let (b, num) = parseInput "input.txt"
         Assert.Equal(1924, findLooserProduct b num)
 
-
     [<Fact>]
-    let Day1() =
+    let ReadlDataPart1() =
         let (b, num) = parseInput "input1.txt"
         Assert.Equal(6592, findWinnerProduct b num)
 
     [<Fact>]
-    let RowdWithMarkedRowIsWinner ()= 
-        let r1 = [| Marked; Marked ; Marked ; Marked; Marked|]
-        Assert.Equal(true, isWinnerRow r1)        
-
-    [<Fact>]
-    let BoardWithMarkedRowIsWinner ()= 
-        let r1 = [| Marked; Nr 4 ; Marked ; Marked; Marked|]
-        let r2 = [| Marked; Marked ; Marked ; Marked; Marked|]
-        let b = [|r1;r2|]
-        Assert.Equal(true, isWinnerBoard b)        
-
-    [<Fact>]
-    let BoardWithMarkedColumnIsWinner ()= 
-        let r1 = [| Nr 3; Nr 4 ; Marked ; Marked; Marked|]
-        let r2 = [| Nr 1; Nr 3; Nr 3; Marked; Nr 4|]
-        let r3 = [| Nr 1; Nr 3; Marked ; Marked; Marked|]
-        let b = [|r1;r2;r3|]
-        Assert.Equal(true, isWinnerBoard b)        
-
-    [<Fact>]
-    let BoardWithNoCompleteMarkedRowIsNotWinner ()= 
-        let r1 = [|  Nr 4 ; Marked ; Marked; Nr 4|]
-        let r2 = [|  Marked ; Nr 3; Nr 3; Marked|]
-        let b = [|r1;r2|]
-        Assert.Equal(false, isWinnerBoard b)        
-
-    [<Fact>]
-    let MarkingBoardMakesItWinner()= 
-        let r1 = [|  Nr 4 ; Marked ; Marked; Nr 4|]
-        let r2 = [|  Marked ; Nr 3; Nr 3; Marked|]
-        let b = [|r1;r2|]
-        let markedBoard = markBoard b 3
-        Assert.Equal(true, isWinnerBoard markedBoard)        
- 
-    [<Fact>]
-    let RowdWithUndrawnNrIsNotWinner ()= 
-        let r1 = [| Marked; Nr 4 ; Marked ; Marked; Marked|]
-        Assert.Equal(false, isWinnerRow r1)        
-
-    [<Fact>]
-    let readAllLines ()= 
-      Assert.Equal(19, readLines "input.txt" |> Seq.length)
-      Assert.Equal(601, readLines "input1.txt" |> Seq.length)
+    let RealDataPart2 () =
+        let (b, num) = parseInput "input1.txt"
+        Assert.Equal(31755, findLooserProduct b num)

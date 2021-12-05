@@ -6,6 +6,7 @@ module Input =
     open System
 
     type Point = { X: int; Y: int } 
+    type Points = Point list
     type LS = { S: Point; E: Point }
     type LineType = Vertical of LS | Horizontal of LS 
 
@@ -30,12 +31,42 @@ module Input =
             let p2 = { X = Int32.Parse(x2y2raw.[0]); Y = Int32.Parse(x2y2raw.[1])} 
             let s = {S = p1; E = p2}
             let lt = getLineTypeFromLineSegment s
-            yield lt 
+            yield lt
         }
 
+    let getPointsFromHorizontalLine (ls: LS) : Points = 
+        let a = ls.E.X - ls.S.X
+        let inc = if a > 0 then 1 else - 1 
+        let xs = [ls.S.X .. inc .. ls.E.X]
+        let points = xs |> List.map (fun x -> { X = x; Y = ls.S.Y })
+        points
+
+    let getPointsFromLine (lt: LineType) : Points = 
+        match lt with 
+            | Vertical l -> []
+            | Horizontal l -> getPointsFromHorizontalLine l 
+        
+    [<Fact>]
+    let GetPointsOnHorizontalLine () =
+        let p_2_2 = { X = 2; Y = 2}
+        let p_3_2 = { X = 3; Y = 2}
+        let p_4_2 = { X = 4; Y = 2}
+        let p_5_2  = { X = 5; Y = 2}
+
+        let segment = {S = p_2_2; E = p_5_2 }
+        let lt = getLineTypeFromLineSegment segment
+        let points = getPointsFromLine lt.Value
+
+        Assert.True(points |> List.contains p_2_2)
+        Assert.True(points |> List.contains p_3_2)
+        Assert.True(points |> List.contains p_4_2)
+        Assert.True(points |> List.contains p_5_2)
+ 
     [<Fact>]
     let ReadlDataPart1() =
         let x  = readLines "input.txt"
+        let validLines = x |> Seq.choose id
         Assert.Equal(10, x |> Seq.length)
+        Assert.Equal(6, validLines  |> Seq.length)
 
 

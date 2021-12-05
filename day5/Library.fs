@@ -88,11 +88,15 @@ module Input =
         Assert.True(points |> List.contains p_2_5)
         Assert.False(points |> List.contains p_2_6)
   
+    let count (lines: (LineType option) seq): int = 
+        let validLines = lines |> Seq.choose id |> Seq.toList
+        let allPoints = validLines |> List.map getPointsFromLine |> List.collect id |> List.groupBy id |> List.filter (fun (_,l) -> l.Length > 1 )
+        allPoints |> List.length
+
     [<Fact>]
     let ReadlDataPart1() =
         let x  = readLines "input.txt"
-        let validLines = x |> Seq.choose id
         Assert.Equal(10, x |> Seq.length)
-        Assert.Equal(6, validLines  |> Seq.length)
+        Assert.Equal(5, count x)
 
 

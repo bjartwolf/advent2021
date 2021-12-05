@@ -34,13 +34,13 @@ module Input =
 
     let isWinnerRow (row: Row) : bool =
         row |> Array.forall ( fun f -> match f with
-                                | Marked -> true
-                                | Nr _ -> false)
+                                        | Marked -> true
+                                        | Nr _ -> false)
 
     let sumOfBoard (board: Board): int =
         let fields = board |> Array.collect (fun r -> r |> Array.map (fun f -> match f with 
-                                                                | Nr x -> x
-                                                                | Marked -> 0)) 
+                                                                                | Nr x -> x
+                                                                                | Marked -> 0)) 
         Array.sum(fields)
 
     let isWinnerColumn (board: Board) : bool =

@@ -13,6 +13,7 @@ module Input =
                 | 'f' -> yield Forward value 
                 | 'd' -> yield Down value 
                 | 'u' -> yield Up value 
+                | _ -> failwith "should not happen" 
     }
 
     let readLines (filePath:string) = readLinesSeq filePath |> Seq.toList

@@ -41,9 +41,17 @@ module Input =
         let points = xs |> List.map (fun x -> { X = x; Y = ls.S.Y })
         points
 
+    let getPointsFromVerticalLine (ls: LS) : Points = 
+        let a = ls.E.Y - ls.S.Y
+        let inc = if a > 0 then 1 else - 1 
+        let ys = [ls.S.Y .. inc .. ls.E.Y]
+        let points = ys |> List.map (fun y -> { X = ls.S.X; Y = y })
+        points
+
+
     let getPointsFromLine (lt: LineType) : Points = 
         match lt with 
-            | Vertical l -> []
+            | Vertical l -> getPointsFromVerticalLine l 
             | Horizontal l -> getPointsFromHorizontalLine l 
         
     [<Fact>]
@@ -61,7 +69,25 @@ module Input =
         Assert.True(points |> List.contains p_3_2)
         Assert.True(points |> List.contains p_4_2)
         Assert.True(points |> List.contains p_5_2)
- 
+
+    [<Fact>]
+    let GetPointsOnVerticalLine () =
+        let p_2_2 = { X = 2; Y = 2}
+        let p_2_3 = { X = 2; Y = 3}
+        let p_2_4 = { X = 2; Y = 4}
+        let p_2_5  = { X = 2; Y = 5}
+        let p_2_6  = { X = 2; Y = 6}
+
+        let segment = {S = p_2_5; E = p_2_2 }
+        let lt = getLineTypeFromLineSegment segment
+        let points = getPointsFromLine lt.Value
+
+        Assert.True(points |> List.contains p_2_2)
+        Assert.True(points |> List.contains p_2_3)
+        Assert.True(points |> List.contains p_2_4)
+        Assert.True(points |> List.contains p_2_5)
+        Assert.False(points |> List.contains p_2_6)
+  
     [<Fact>]
     let ReadlDataPart1() =
         let x  = readLines "input.txt"

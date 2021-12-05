@@ -99,4 +99,11 @@ module Input =
         Assert.Equal(10, x |> Seq.length)
         Assert.Equal(5, count x)
 
+    [<Fact>]
+    let Read2DataPart1() =
+        let x  = readLines "input1.txt"
+        Assert.Equal(500, x |> Seq.length)
+        Assert.Equal(8111, count x)
+
+
 

@@ -8,7 +8,7 @@ module Input =
     type Point = { X: int; Y: int } 
     type Points = Point list
     type LS = { S: Point; E: Point }
-    type LineType = Vertical of LS | Horizontal of LS 
+    type LineType = Vertical of LS | Horizontal of LS | Diagonal of LS
 
     let getLineTypeFromLineSegment (ls: LS ): LineType option =
         match ls with
@@ -16,7 +16,9 @@ module Input =
                 E = { X = x2; Y = y2}} when x1 = x2 && y1 <> y2 -> Some (Vertical ls)
             | { S = { X = x1; Y = y1};
                 E = { X = x2; Y = y2}} when x1 <> x2 && y1 = y2 -> Some (Horizontal ls)
-            | _ -> None
+            | { S = { X = x1; Y = y1};
+                E = { X = x2; Y = y2}} -> Some (Diagonal ls)
+            | _ -> failwith "should not happen" 
 
     let readLines (filePath:string): LineType option seq  = seq {
         use sr = new StreamReader (filePath)
@@ -48,11 +50,23 @@ module Input =
         let points = ys |> List.map (fun y -> { X = ls.S.X; Y = y })
         points
 
+    let getPointsFromDiagonal (ls: LS) : Points = 
+        let ax = ls.E.X - ls.S.X
+        let ay = ls.E.Y - ls.S.Y
+
+        let incx = if ax > 0 then 1 else - 1 
+        let incy = if ay > 0 then 1 else - 1 
+
+        let xs = [ls.S.X .. incx .. ls.E.X]
+        let ys = [ls.S.Y .. incy .. ls.E.Y]
+        let points = List.zip xs ys |> List.map (fun (x,y) -> {X = x; Y = y})
+        points
 
     let getPointsFromLine (lt: LineType) : Points = 
         match lt with 
             | Vertical l -> getPointsFromVerticalLine l 
             | Horizontal l -> getPointsFromHorizontalLine l 
+            | Diagonal l -> getPointsFromDiagonal l 
         
     [<Fact>]
     let GetPointsOnHorizontalLine () =
@@ -97,7 +111,7 @@ module Input =
     let ReadlDataPart1() =
         let x  = readLines "input.txt"
         Assert.Equal(10, x |> Seq.length)
-        Assert.Equal(5, count x)
+        Assert.Equal(12, count x)
 
     [<Fact>]
     let Read2DataPart1() =

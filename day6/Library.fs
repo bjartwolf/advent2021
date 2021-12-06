@@ -20,10 +20,13 @@ module Input =
         let nrOfDay = 2
         nrOfDay - 1 
 
-    let passDay (fish: Fish) : (Fish * Newborn option) =
+    let passDay (fish: Fish) : Fish list =
         match fish with 
-            | Baby nb -> if nb = 0 then (Adult (createLanternFish ()), None) else (Baby (nb - 1), None)
-            | Adult a -> if a = 0 then (Adult (createLanternFish ()), Some (createNewbornFish ())) else (Adult (a - 1), None)
+            | Baby nb -> if nb = 0 then [Adult (createLanternFish ())] else [Baby (nb - 1)]
+            | Adult a -> if a = 0 then [Adult (createLanternFish ()); Baby( createNewbornFish ())] else [Adult (a - 1)]
+
+    let passDayForFishes (fishes: Fish list) : Fish list =
+        fishes |> List.map (fun f -> passDay f) |> List.collect id
 
     let readInit (filePath: string): int list = 
         use sr = new StreamReader (filePath) 
@@ -37,10 +40,13 @@ module Input =
 
     [<Fact>]
     let ReadlDataPart1CheckFish() =
-        let fish  = getInitialFish "input.txt" 
-        Assert.Equal(Adult 3, fish.Head)
-        let fishes = fish |> List.map (fun f -> passDay f)
-        Assert.Equal(fishes.Head, (Adult 2, None))
+        let day1 = getInitialFish "input.txt" 
+        Assert.Equal(Adult 3, day1.Head)
+        let day2 = passDayForFishes day1 
+        Assert.Equal(day2.Head, Adult 2)
+        Assert.Equal(day2.Tail.Head, Adult 3)
+        let day3 = passDayForFishes day2 
+        Assert.Equal(6, day3.Length)
 
     [<Fact>]
     let ReadlDataPart1 () =

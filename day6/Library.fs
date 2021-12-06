@@ -38,15 +38,28 @@ module Input =
         let numbers = readInit filePath
         numbers |> List.map (fun f -> createLanternFishFromDays f)
 
+    let rec passNDays (fish: Fish list) (days: int) : Fish list = 
+        if days = 0 then fish
+        else 
+            let nextDay = passDayForFishes fish
+            passNDays nextDay (days - 1)
+        
+
     [<Fact>]
     let ReadlDataPart1CheckFish() =
-        let day1 = getInitialFish "input.txt" 
-        Assert.Equal(Adult 3, day1.Head)
+        let day0 = getInitialFish "input.txt" 
+        Assert.Equal(Adult 3, day0.Head)
+        let day1 = passDayForFishes day0 
+        Assert.Equal(day1.Head, Adult 2)
+        Assert.Equal(day1.Tail.Head, Adult 3)
         let day2 = passDayForFishes day1 
-        Assert.Equal(day2.Head, Adult 2)
-        Assert.Equal(day2.Tail.Head, Adult 3)
+        Assert.Equal(6, day2.Length)
+
         let day3 = passDayForFishes day2 
-        Assert.Equal(6, day3.Length)
+        Assert.Equal(7, day3.Length)
+
+        Assert.True((day0 = passNDays day0 0))
+        Assert.True((day3 = passNDays day0 3))
 
     [<Fact>]
     let ReadlDataPart1 () =

@@ -14,11 +14,11 @@ module Input =
  
     let createLanternFish () : LanternFish =
         let nrOfDay = 7
-        nrOfDay - 1 
+        nrOfDay - 1
     
     let createNewbornFish () : Newborn =
         let nrOfDay = 2
-        nrOfDay - 1 
+        nrOfDay - 1
 
     let passDay (fish: Fish) : Fish list =
         match fish with 
@@ -44,7 +44,37 @@ module Input =
             let nextDay = passDayForFishes fish
             passNDays nextDay (days - 1)
         
+    [<Fact>]
+    let CheckFullData () =
+        let day0 = getInitialFish "input1.txt" 
+        let day80 = passNDays day0 80 
+        Assert.Equal(387413, day80.Length)
 
+    let howMany (fish: Fish) (days: int): int =
+        // INSERT FANCY FORMULA WITH COMBINATORICS as
+        // fish only depend on the input it is most likely
+        // a fancy function of log and exp and modulus that will
+        // fit the solutions...
+        1 
+         
+//
+    [<Fact>]
+    let test () = 
+        let day0Fish0 = getInitialFish "input.txt" |> List.head
+        Assert.Equal(1, howMany day0Fish0 0)
+//        Assert.Equal(1, howMany day0Fish0 1)
+//        Assert.Equal(2, howMany day0Fish0 5)
+
+    [<Fact>]
+    let CheckTestData () =
+        let day0 = getInitialFish "input.txt" 
+        let day18 = passNDays day0 18
+        Assert.Equal(26, day18.Length)
+//        let day80 = passNDays day0 80 
+//        Assert.Equal(5934, day80.Length)
+//        let day256 = passNDays day0 256 
+//        Assert.NotEmpty(day256)
+ 
     [<Fact>]
     let ReadlDataPart1CheckFish() =
         let day0 = getInitialFish "input.txt" 

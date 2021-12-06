@@ -5,15 +5,23 @@ module Input =
     open Xunit
     open System
 
+    //let firstCycle = 2
+    let firstCycle = 1
+    
+    type Newborn = FirstCycle of int
 
-    let readLines (filePath:string): string seq  = seq {
-        use sr = new StreamReader (filePath)
-        while not sr.EndOfStream do
-            let line = sr.ReadLine()
-            yield line 
-        }
+    //let nrOfDay = 7
+    let nrOfDay = 6
+    let counter = [0 .. nrOfDay]
+    type LanternFish = DaysLeft of int
+
+    let readInit (filePath: string): int list = 
+        use sr = new StreamReader (filePath) 
+        let line = sr.ReadLine()
+        let numbers = line.Split(",")
+        numbers |> Array.map(fun f -> Int32.Parse(f)) |> Array.toList
 
     [<Fact>]
     let ReadlDataPart1() =
-        let x  = readLines "input.txt"
-        Assert.Equal(10, x |> Seq.length)
+        let x  = readInit "input.txt"
+        Assert.Equal(5, x |> List.length)

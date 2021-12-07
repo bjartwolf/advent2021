@@ -17,7 +17,7 @@ module Input =
         let max = input |> List.max
         let stops = [min .. max]
         let allFuelCombinations = stops 
-                                    |> List.map (fun s -> (s,input |> List.map(fun i -> Math.Abs(s - i )) |> List.sum))
+                                    |> List.map (fun s -> (s,input |> List.map(fun i -> (Math.Abs(s - i ) |> fun x -> [0 .. x] |> List.sum)) |> List.sum))
         let bestCombo = allFuelCombinations |> List.map (fun (_,f) -> f) |> List.min 
         bestCombo 
 
@@ -26,13 +26,13 @@ module Input =
     let calcFuelForinput () = 
         let input = readInit "input.txt" 
         let fuel = calcFuel input
-        Assert.Equal(37, fuel) 
+        Assert.Equal(168, fuel) 
 
     [<Fact>]
     let calcFuelForRealinput () = 
         let input = readInit "input1.txt" 
         let fuel = calcFuel input
-        Assert.Equal(349812, fuel) 
+        Assert.Equal(99763899, fuel) 
      
     [<Fact>]
     let test2 () = 

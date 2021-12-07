@@ -37,7 +37,6 @@ module Input =
            let (nextFish, nextBaby) = nextDay fishes babies
            moveDays nextFish nextBaby (daysToGo - 1) 
 
-      
     [<Fact>]
     let test2 () = 
         let input = readInit "input.txt" 

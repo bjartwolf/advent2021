@@ -59,6 +59,10 @@ module Input =
         // e = F
         // f = C
         // g = D 
+        
+    let keys = Map[ ("abcdefg", 8); ("acdeg", 5); ("ef",1); ("aef",7);("cefg",4);("abdfg",2);("adefg",3);("abcdef",0); ("dcaebg",6);("acdefg",9)]
+
+    // 
     [<Fact>]
     let calcFuelForinput2 () = 
         let input = readInit "input1.txt" 

@@ -52,6 +52,13 @@ module Input =
         Assert.Equal(10, input.Length)
         Assert.Equal(26, findNrOfOccurancesTotal input [one;four;seven;eight])
 
+        // a = A
+        // b = E
+        // c = B
+        // d = G 
+        // e = F
+        // f = C
+        // g = D 
     [<Fact>]
     let calcFuelForinput2 () = 
         let input = readInit "input1.txt" 
